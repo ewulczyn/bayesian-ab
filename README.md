@@ -9,8 +9,6 @@ wmf_ab currently contain these tests:
 
 ### Usage ###
 
-If you're not running SeGLiR in node, note that SeGLiR requires [*jStat.js*](https://github.com/jstat/jstat) available.
-
 ```javascript
 var wmf_ab = require("wmf_ab");
 // collect impression and donation counts
@@ -31,4 +29,4 @@ To download the package and install the development dependencies run ```npm inst
 
 ### License ###
 
-SeGLiR is distributed under the [MIT License](http://www.opensource.org/licenses/MIT).
+wmf_ab is distributed under the [MIT License](http://www.opensource.org/licenses/MIT).
