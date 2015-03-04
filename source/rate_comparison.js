@@ -178,5 +178,5 @@ exports.rate_comparison = function(rate_data, conf, num_samples){
     winner = get_max_key(test_results["Probability of Being the Winner"])
     test_results["Winner's Percent Lift"] = compute_winners_lift(rate_dists, winner, conf)
 
-    return {'rate_distributions':rate_dists, 'resuts_table':test_results}
+    return {'distributions':rate_dists, 'statistics':test_results}
 }
