@@ -147,7 +147,11 @@ var compute_winners_lift = function(rate_dists, winner, conf){
 *       Computes raw posterior distributions over donation rates (for visualization)
 *        and a summary statistics (to be displayed in a table)
 * @param {Object} rate_data - donation and impression counts for each banner in the form:
-                              {'banner_name': {'num_donations': 10, 'num_impressions': 30}}
+                              rate_data= {
+                                'A' : {'num_donations': 500, 'num_impressions': 1000},
+                                'B' : {'num_donations': 488, 'num_impressions': 1000},
+                                'C' : {'num_donations': 480, 'num_impressions': 1000}
+                                }
 * @param {Number} conf - desired confidence level e.g. 0.95
 * @param {Number} num_samples - the number of samples to draw from the posterior
 * @return {Object} - a dict containing a dict of posterior rate distributions
