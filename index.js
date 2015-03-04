@@ -7,6 +7,17 @@ var divide = require( 'compute-divide' );
 var quantile = require( 'compute-quantile' );
 var exports = module.exports = {};
 
+
+/**
+* FUNCTION: get_p_dist(num_donations, num_impressions, num_samples )
+*       Computes the posterior distribution over the donation rate 
+*
+* @param {Number} num_donations - number of donation the banner received
+* @param {Number} num_impressions - number of times the banner was shown
+* @param {Number} num_samples - the number of samples to draw from the posterior
+* @return {Array} a sample from the posterior distribution
+*/
+
 var get_p_dist = function(num_donations, num_impressions, num_samples){
     if (typeof(num_samples)==='undefined') num_samples = 20000;
     p_dist = [];
@@ -16,6 +27,14 @@ var get_p_dist = function(num_donations, num_impressions, num_samples){
     return p_dist;
 }
 
+/**
+* FUNCTION: compute_credible_interval(dist, conf)
+*       Computes a bayesian creidible interval for the donation rate 
+*
+* @param {Array} dist - a sample from the posterior distribution over the donation rate
+* @param {Number} conf - desired confidence level e.g. 0.95
+* @return {Array} - the upper and lower bounds of the credible interval [upper, lower]
+*/
 var compute_credible_interval = function(dist, conf){
     a_2 = (1.0-conf)/2.0
     lower_bound = quantile(dist, a_2)
@@ -23,6 +42,14 @@ var compute_credible_interval = function(dist, conf){
     return [lower_bound, upper_bound]
 }
 
+/**
+* FUNCTION: compute_credible_intervals(rate_data, conf)
+*       Computes a bayesian creidible interval each banner in rate_data Object
+*
+* @param {Object} rate_data - AB test data object
+* @param {Number} conf - desired confidence level e.g. 0.95
+* @return {Object} - a dict mapping banner names to credible intervals
+*/
 var compute_credible_intervals = function(rate_data, conf){
     cis = {}
     for (name in rate_data)
@@ -30,6 +57,15 @@ var compute_credible_intervals = function(rate_data, conf){
     return cis
 }
 
+
+/**
+* FUNCTION: compute_probability_of_being_the_winner(rate_dists, num_samples)
+*       Computes the probability that a banner is better than all other banners
+*       in the test
+* @param {Object} rate_dists -  a dict mapping from banner names to donation rate distributions
+* @param {Number} num_samples - the size of the donation rate distributions
+* @return {Object} - a dict mapping banner names to the probability that that banner is the winner
+*/
 var compute_probability_of_being_the_winner = function(rate_dists, num_samples){
     num_wins = {}
 
@@ -59,7 +95,12 @@ var compute_probability_of_being_the_winner = function(rate_dists, num_samples){
     return num_wins
 }
 
-
+/**
+* FUNCTION: get_max_key(dict)
+*       finds the key of the maximum value
+* @param {Object} dict -  a dict comparable objects
+* @return {Object} - key with the maximum value
+*/
 var get_max_key = function(dict){
     max_key = Object.keys(dict)[0]
     max_value = dict[max_key]
@@ -73,6 +114,16 @@ var get_max_key = function(dict){
     return max_key
 }
 
+
+/**
+* FUNCTION: compute_winners_lift(rate_dists, winner, conf)
+*       Computes a credible interval over the percent lift that the winning banner has
+        over each of the other banners
+* @param {Object} rate_dists -  a dict mapping from banner names to donation rate distributions
+* @param {String} winner - the name of the winning banner
+* @param {Number} conf - desired confidence level e.g. 0.95
+* @return {Object} - a dict mapping banner names to credible intervals 
+*/
 var compute_winners_lift = function(rate_dists, winner, conf){
     winning_dist = rate_dists[winner]
     lift_cis = {}
@@ -91,7 +142,17 @@ var compute_winners_lift = function(rate_dists, winner, conf){
     return lift_cis
 }
 
-    
+/**
+* FUNCTION: rate_comparison(rate_data, conf, num_samples)
+*       Computes raw posterior distributions over donation rates (for visualization)
+*        and a summary statistics (to be displayed in a table)
+* @param {Object} rate_data - donation and impression counts for each banner in the form:
+                              {'banner_name': {'num_donations': 10, 'num_impressions': 30}}
+* @param {Number} conf - desired confidence level e.g. 0.95
+* @param {Number} num_samples - the number of samples to draw from the posterior
+* @return {Object} - a dict containing a dict of posterior rate distributions
+                     and a dict of test results
+*/  
 exports.rate_comparison = function(rate_data, conf, num_samples){
     if (typeof(conf)==='undefined') conf = 0.95;
     if (typeof(num_samples)==='undefined') num_samples = 20000;
@@ -114,5 +175,5 @@ exports.rate_comparison = function(rate_data, conf, num_samples){
     winner = get_max_key(test_results["Probability of Being the Winner"])
     test_results["Winner's Percent Lift"] = compute_winners_lift(rate_dists, winner, conf)
 
-    return test_results
+    return {'rate_distributions':rate_dists, 'resuts_table':test_results}
 }

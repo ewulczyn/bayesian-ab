@@ -21,7 +21,6 @@ wmf_ab.rate_comparison(rate_data)
 
 ```
 
-
 ### Building from source ###
 
 Make sure you have [grunt](http://gruntjs.com/) and [node](http://nodejs.org/download/) installed.
