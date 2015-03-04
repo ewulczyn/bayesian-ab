@@ -24,8 +24,7 @@ wmf_ab.rate_comparison(rate_data)
 
 ### Building from source ###
 
-Make sure you have [grunt](http://gruntjs.com/) and [node](http://nodejs.org/download/) installed.
-To download the package and install the development dependencies run ```npm install git://github.com/ewulczyn/wmf_ab.git``` and to build it run ```grunt``` in the root directory.
+To download the package and install the development dependencies run ```npm install git://github.com/ewulczyn/wmf_ab.git```
 
 ### License ###
 
